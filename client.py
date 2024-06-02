@@ -1,23 +1,22 @@
 import socket
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    try:
-        port = 19185
-        host = '0.tcp.sa.ngrok.io'  # Ingresar la direcciÃ³n de Ngrok proporcionada por el servidor
-        s.connect((host,port))
+def ConexionLocal():
 
-        # espera a que el usuario ingrese una URL y la envía al servidor
-        while True: 
-            url = input('Ingrese una URL (o presione Enter para salir): ')
-            if not url:
-                break  # si no se ingresa ninguna URL, finaliza el programa
+    HOST = '192.168.1.10'
+    PORT = 65432        
 
-            s.sendall(url.encode())  # codifica y envía la URL al servidor
-            data = s.recv(1024)  # recibe la respuesta del servidor
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
 
-                # decodifica y muestra la respuesta del servidor
-            print('Respuesta del servidor:', data.decode())
-                
+        while True:
+            msg = input("Ingrese plataforma: ")
+            data = s.recv(1024)
+            msg = data.decode()
 
-    except KeyboardInterrupt as error:
-        print(error)
+            if msg == "":
+               break
+
+            s.sendall(bytes(msg, 'utf-8'))
+        
+    print('Recibido', repr(data))
+
